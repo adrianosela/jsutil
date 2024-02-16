@@ -7,7 +7,24 @@ import (
 )
 
 // GetFromScope retrieves an expression from the given scope.
-func GetFromScope(scope js.Value, expr string) (js.Value, error) {
+func GetFromScope(scope js.Value, expr string) (js.Value, bool) {
+	value := scope
+	for _, part := range strings.Split(expr, ".") {
+		if value.IsUndefined() {
+			return js.Undefined(), false
+		}
+		value = value.Get(part)
+	}
+	return value, true
+}
+
+// Get retrieves an expression from the global scope.
+func Get(expr string) (js.Value, bool) {
+	return GetFromScope(js.Global(), expr)
+}
+
+// GetFromScopeE retrieves an expression from the given scope.
+func GetFromScopeE(scope js.Value, expr string) (js.Value, error) {
 	value := scope
 	for _, part := range strings.Split(expr, ".") {
 		if value.IsUndefined() {
@@ -18,9 +35,9 @@ func GetFromScope(scope js.Value, expr string) (js.Value, error) {
 	return value, nil
 }
 
-// Get retrieves an expression from the global scope.
-func Get(expr string) (js.Value, error) {
-	return GetFromScope(js.Global(), expr)
+// GetE retrieves an expression from the global scope.
+func GetE(expr string) (js.Value, error) {
+	return GetFromScopeE(js.Global(), expr)
 }
 
 // AssertTypeEquals returns nil if a given JavaScript value conforms to the given type.

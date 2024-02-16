@@ -19,8 +19,26 @@ var TruthyTypes = []js.Type{
 }
 
 // GetBoolean retrieves a type-checked boolean from the global scope.
-func GetBoolean(expr string) (bool, error) {
-	jsValue, err := Get(expr)
+func GetBoolean(expr string) (bool, bool) {
+	b, err := GetBooleanE(expr)
+	if err != nil {
+		return false, false
+	}
+	return b, true
+}
+
+// GetTruthyBoolean retrieves a type-checked boolean from the global scope.
+func GetTruthyBoolean(expr string) (bool, bool) {
+	b, err := GetTruthyBooleanE(expr)
+	if err != nil {
+		return false, false
+	}
+	return b, true
+}
+
+// GetBooleanE retrieves a type-checked boolean from the global scope.
+func GetBooleanE(expr string) (bool, error) {
+	jsValue, err := GetE(expr)
 	if err != nil {
 		return false, fmt.Errorf("could not get js object '%s': %v", expr, err)
 	}
@@ -30,9 +48,9 @@ func GetBoolean(expr string) (bool, error) {
 	return jsValue.Bool(), nil
 }
 
-// GetFunction retrieves a type-checked (truthy) boolean from the global scope.
-func GetTruthyBoolean(expr string) (bool, error) {
-	jsValue, err := Get(expr)
+// GetTruthyBooleanE retrieves a type-checked (truthy) boolean from the global scope.
+func GetTruthyBooleanE(expr string) (bool, error) {
+	jsValue, err := GetE(expr)
 	if err != nil {
 		return false, fmt.Errorf("could not get js object '%s': %v", expr, err)
 	}
