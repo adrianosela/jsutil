@@ -7,24 +7,7 @@ import (
 )
 
 // GetFromScope retrieves an expression from the given scope.
-func GetFromScope(scope js.Value, expr string) (js.Value, bool) {
-	value := scope
-	for _, part := range strings.Split(expr, ".") {
-		if value.IsUndefined() {
-			return js.Undefined(), false
-		}
-		value = value.Get(part)
-	}
-	return value, true
-}
-
-// Get retrieves an expression from the global scope.
-func Get(expr string) (js.Value, bool) {
-	return GetFromScope(js.Global(), expr)
-}
-
-// GetFromScopeE retrieves an expression from the given scope.
-func GetFromScopeE(scope js.Value, expr string) (js.Value, error) {
+func GetFromScope(scope js.Value, expr string) (js.Value, error) {
 	value := scope
 	for _, part := range strings.Split(expr, ".") {
 		if value.IsUndefined() {
@@ -35,9 +18,9 @@ func GetFromScopeE(scope js.Value, expr string) (js.Value, error) {
 	return value, nil
 }
 
-// GetE retrieves an expression from the global scope.
-func GetE(expr string) (js.Value, error) {
-	return GetFromScopeE(js.Global(), expr)
+// Get retrieves an expression from the global scope.
+func Get(expr string) (js.Value, error) {
+	return GetFromScope(js.Global(), expr)
 }
 
 // AssertTypeEquals returns nil if a given JavaScript value conforms to the given type.
@@ -55,5 +38,5 @@ func AssertTypeOneOf(jsValue js.Value, jsTypes ...js.Type) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("not a any of %v", jsTypes)
+	return fmt.Errorf("not any of %v", jsTypes)
 }
